@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Corrector de Acentos - LanguageTool</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <div class="logo">◈</div>
+  <h1>Corrector de Acentos</h1>
+  <p class="subtitle">Corrige acentos en nombres hispanos usando diccionario + Hunspell</p>
+
+  <div class="card input-card">
+    <label for="nameInput">Nombre a corregir</label>
+    <div class="input-row">
+      <input type="text" id="nameInput" placeholder="Ej: JOSE GARCIA LOPEZ" autofocus spellcheck="false">
+      <button id="correctBtn">Corregir</button>
+    </div>
+
+    <div id="result" class="result hidden">
+      <div class="result-box">
+        <div class="result-label">Original</div>
+        <div id="originalDisplay" class="result-text original"></div>
+      </div>
+      <div class="result-arrow">→</div>
+      <div class="result-box">
+        <div class="result-label">Corregido</div>
+        <div id="correctedDisplay" class="result-text corrected"></div>
+      </div>
+    </div>
+
+    <div id="changes" class="changes"></div>
+    <div id="error" class="error hidden"></div>
+    <div id="loading" class="loading hidden">Corrigiendo…</div>
+  </div>
+
+  <div class="card">
+    <h3 class="card-title">Pruebas rápidas</h3>
+    <div class="test-buttons">
+      <button class="test-btn" data-name="JOSE GARCIA LOPEZ">JOSE GARCIA LOPEZ</button>
+      <button class="test-btn" data-name="MARIA RODRIGUEZ PEREZ">MARIA RODRIGUEZ PEREZ</button>
+      <button class="test-btn" data-name="FELIX RAMIREZ QUINONES">FELIX RAMIREZ QUINONES</button>
+      <button class="test-btn" data-name="RAUL SANCHEZ">RAUL SANCHEZ</button>
+      <button class="test-btn" data-name="JESUS MARTINEZ">JESUS MARTINEZ</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 class="card-title">¿Cómo funciona?</h3>
+    <div class="how-it-works">
+      <p>1. <strong>Diccionario</strong> → Busca cada palabra en 50,000 nombres con acentos conocidos</p>
+      <p>2. <strong>Hunspell</strong> → Si no está en el diccionario, consulta el corrector ortográfico Hunspell con diccionario de español</p>
+      <p>3. Solo aplica cambios que sean exclusivamente de acentuación (sin alterar otras letras)</p>
+    </div>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
