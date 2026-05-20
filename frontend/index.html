@@ -3,19 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Corrector de Acentos - LanguageTool</title>
+<title>Corrector de Acentos</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="container">
   <div class="logo">◈</div>
   <h1>Corrector de Acentos</h1>
-  <p class="subtitle">Corrige acentos en nombres hispanos usando diccionario + Hunspell</p>
+  <p class="subtitle">Corrige acentos en nombres hispanos</p>
 
   <div class="card input-card">
-    <label for="nameInput">Nombre a corregir</label>
-    <div class="input-row">
-      <input type="text" id="nameInput" placeholder="Ej: JOSE GARCIA LOPEZ" autofocus spellcheck="false">
+    <label for="nombresInput">Nombre(s)</label>
+    <input type="text" id="nombresInput" placeholder="Ej: JOSE" autofocus spellcheck="false">
+
+    <label for="apellidosInput">Apellidos</label>
+    <input type="text" id="apellidosInput" placeholder="Ej: GARCIA LOPEZ" spellcheck="false">
+
+    <div class="options-row">
+      <select id="ordenSelect">
+        <option value="nombres_apellidos">Nombre(s) + Apellidos</option>
+        <option value="apellidos_nombres">Apellidos + Nombre(s)</option>
+      </select>
+      <select id="formatoSelect">
+        <option value="MAYUSCULAS">MAYÚSCULAS</option>
+        <option value="minusculas">minúsculas</option>
+        <option value="Capitalizado">Capitalizado</option>
+      </select>
       <button id="correctBtn">Corregir</button>
     </div>
 
@@ -39,20 +52,11 @@
   <div class="card">
     <h3 class="card-title">Pruebas rápidas</h3>
     <div class="test-buttons">
-      <button class="test-btn" data-name="JOSE GARCIA LOPEZ">JOSE GARCIA LOPEZ</button>
-      <button class="test-btn" data-name="MARIA RODRIGUEZ PEREZ">MARIA RODRIGUEZ PEREZ</button>
-      <button class="test-btn" data-name="FELIX RAMIREZ QUINONES">FELIX RAMIREZ QUINONES</button>
-      <button class="test-btn" data-name="RAUL SANCHEZ">RAUL SANCHEZ</button>
-      <button class="test-btn" data-name="JESUS MARTINEZ">JESUS MARTINEZ</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <h3 class="card-title">¿Cómo funciona?</h3>
-    <div class="how-it-works">
-      <p>1. <strong>Diccionario</strong> → Busca cada palabra en 50,000 nombres con acentos conocidos</p>
-      <p>2. <strong>Hunspell</strong> → Si no está en el diccionario, consulta el corrector ortográfico Hunspell con diccionario de español</p>
-      <p>3. Solo aplica cambios que sean exclusivamente de acentuación (sin alterar otras letras)</p>
+      <button class="test-btn" data-nombres="JOSE" data-apellidos="GARCIA LOPEZ">JOSE GARCIA LOPEZ</button>
+      <button class="test-btn" data-nombres="MARIA" data-apellidos="RODRIGUEZ PEREZ">MARIA RODRIGUEZ PEREZ</button>
+      <button class="test-btn" data-nombres="FELIX" data-apellidos="RAMIREZ QUINONES">FELIX RAMIREZ QUINONES</button>
+      <button class="test-btn" data-nombres="RAUL" data-apellidos="SANCHEZ">RAUL SANCHEZ</button>
+      <button class="test-btn" data-nombres="JESUS" data-apellidos="MARTINEZ">JESUS MARTINEZ</button>
     </div>
   </div>
 </div>

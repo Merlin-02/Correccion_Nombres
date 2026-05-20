@@ -1,6 +1,9 @@
 const API_BASE = '';
 
-const nameInput = document.getElementById('nameInput');
+const nombresInput = document.getElementById('nombresInput');
+const apellidosInput = document.getElementById('apellidosInput');
+const ordenSelect = document.getElementById('ordenSelect');
+const formatoSelect = document.getElementById('formatoSelect');
 const correctBtn = document.getElementById('correctBtn');
 const resultDiv = document.getElementById('result');
 const errorDiv = document.getElementById('error');
@@ -9,10 +12,22 @@ const originalDisplay = document.getElementById('originalDisplay');
 const correctedDisplay = document.getElementById('correctedDisplay');
 const changesDiv = document.getElementById('changes');
 
-async function correctName(name) {
-  const trimmed = name.trim();
-  if (!trimmed) {
-    showError('Ingresa un nombre para corregir');
+function getParams() {
+  const params = new URLSearchParams();
+  const nombres = nombresInput.value.trim();
+  const apellidos = apellidosInput.value.trim();
+  if (!nombres && !apellidos) return null;
+  if (nombres) params.set('nombres', nombres);
+  if (apellidos) params.set('apellidos', apellidos);
+  params.set('orden', ordenSelect.value);
+  params.set('formato', formatoSelect.value);
+  return params;
+}
+
+async function correctName() {
+  const params = getParams();
+  if (!params) {
+    showError('Ingresa al menos nombre(s) o apellidos');
     return;
   }
 
@@ -23,14 +38,14 @@ async function correctName(name) {
   resultDiv.classList.add('hidden');
 
   try {
-    const res = await fetch(`${API_BASE}/api/correct?name=${encodeURIComponent(trimmed)}`);
+    const res = await fetch(`${API_BASE}/api/correct?${params}`);
     if (!res.ok) throw new Error('HTTP ' + res.status);
 
     const data = await res.json();
     if (data.error) { showError(data.error); return; }
 
     resultDiv.classList.remove('hidden');
-    originalDisplay.textContent = data.original.toUpperCase();
+    originalDisplay.textContent = data.original;
     correctedDisplay.textContent = data.corrected;
 
     if (data.changes && data.changes.length > 0) {
@@ -62,12 +77,15 @@ function hideError() {
   errorDiv.classList.add('hidden');
 }
 
-correctBtn.addEventListener('click', () => correctName(nameInput.value));
-nameInput.addEventListener('keydown', e => { if (e.key === 'Enter') correctName(nameInput.value); });
+correctBtn.addEventListener('click', correctName);
+[nombresInput, apellidosInput].forEach(el =>
+  el.addEventListener('keydown', e => { if (e.key === 'Enter') correctName(); })
+);
 
 document.querySelectorAll('.test-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    nameInput.value = btn.dataset.name;
-    correctName(btn.dataset.name);
+    nombresInput.value = btn.dataset.nombres;
+    apellidosInput.value = btn.dataset.apellidos;
+    correctName();
   });
 });

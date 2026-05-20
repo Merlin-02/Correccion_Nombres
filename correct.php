@@ -1,21 +1,20 @@
 <?php
-/**
- * Corrector de acentos para nombres hispanos
- *
- * Uso CLI:     php correct.php "JOSE GARCIA LOPEZ"
- *             echo "JOSE GARCIA" | php correct.php
- * Uso librería: require 'correct.php'; $c = new Corrector(); $c->correct("JOSE");
- */
 
 class Corrector {
     private array $dict = [];
 
     public function __construct() {
-        $path = __DIR__ . '/backend/dictionary.json';
-        if (file_exists($path)) {
-            $data = json_decode(file_get_contents($path), true);
-            $this->dict = $data['words'] ?? [];
+        $dbPath = __DIR__ . '/backend/db.php';
+        if (!file_exists($dbPath)) return;
+        require_once $dbPath;
+        $conn = getDbConnection();
+        if (!$conn) return;
+        $result = $conn->query("SELECT word_no_accent, word_accented FROM dictionary");
+        if (!$result) return;
+        while ($row = $result->fetch_assoc()) {
+            $this->dict[$row['word_no_accent']] = $row['word_accented'];
         }
+        $result->free();
     }
 
     private static function removeAccents(string $s): string {
@@ -46,6 +45,15 @@ class Corrector {
         return null;
     }
 
+    private static function applyFormat(string $word, string $formato): string {
+        return match($formato) {
+            'MAYUSCULAS' => mb_strtoupper($word),
+            'minusculas' => mb_strtolower($word),
+            'Capitalizado' => mb_strtoupper(mb_substr($word, 0, 1)) . mb_strtolower(mb_substr($word, 1)),
+            default => mb_strtoupper($word),
+        };
+    }
+
     public function correct(string $name): string {
         $words = preg_split('/\s+/', trim($name));
         $result = [];
@@ -62,10 +70,27 @@ class Corrector {
         return implode(' ', $result);
     }
 
-    public function correctWithDetails(string $name): array {
-        $words = preg_split('/\s+/', trim($name));
+    public function correctStructured(
+        string $nombres,
+        string $apellidos = '',
+        string $orden = 'nombres_apellidos',
+        string $formato = 'MAYUSCULAS'
+    ): array {
+        $nombres = trim($nombres);
+        $apellidos = trim($apellidos);
+        $combined = match($orden) {
+            'apellidos_nombres' => trim($apellidos . ' ' . $nombres),
+            default => trim($nombres . ' ' . $apellidos),
+        };
+        if ($combined === '') {
+            return ['original' => '', 'corrected' => '', 'method' => 'no_changes', 'changes' => []];
+        }
+
+        $words = preg_split('/\s+/', $combined);
         $correctedWords = [];
         $changes = [];
+        $usedHunspell = false;
+
         foreach ($words as $word) {
             $upper = mb_strtoupper(trim($word));
             $key = self::removeAccents($upper);
@@ -79,27 +104,68 @@ class Corrector {
                 if ($sug && mb_strtoupper($sug) !== $upper) {
                     $correctedWords[] = mb_strtoupper($sug);
                     $changes[] = ['from' => $upper, 'to' => mb_strtoupper($sug)];
+                    $usedHunspell = true;
                 } else {
                     $correctedWords[] = $word;
                 }
             }
         }
+
+        $corrected = implode(' ', $correctedWords);
+        $correctedWords = explode(' ', $corrected);
+        $correctedWords = array_map(fn($w) => self::applyFormat($w, $formato), $correctedWords);
+        $corrected = implode(' ', $correctedWords);
+
+        $method = !empty($changes) ? ($usedHunspell ? 'hunspell' : 'dictionary') : 'no_changes';
+
         return [
-            'original' => $name,
-            'corrected' => implode(' ', $correctedWords),
+            'original' => $combined,
+            'corrected' => $corrected,
+            'method' => $method,
             'changes' => $changes,
         ];
     }
 }
 
-// --- CLI entry point (solo cuando se ejecuta directamente, no al ser incluido) ---
 if (php_sapi_name() === 'cli' && realpath($argv[0] ?? '') === realpath(__FILE__)) {
-    $input = $argc > 1 ? $argv[1] : trim(file_get_contents('php://stdin'));
-    if (empty($input)) {
-        fwrite(STDERR, "Uso: php correct.php \"NOMBRE SIN ACENTOS\"\n");
+    $args = $argv;
+    array_shift($args);
+
+    $nombres = '';
+    $apellidos = '';
+    $orden = 'nombres_apellidos';
+    $formato = 'MAYUSCULAS';
+
+    foreach ($args as $arg) {
+        if (str_starts_with($arg, '--')) {
+            $parts = explode('=', substr($arg, 2), 2);
+            $key = $parts[0];
+            $val = $parts[1] ?? true;
+            match($key) {
+                'nombres' => $nombres = $val,
+                'apellidos' => $apellidos = $val,
+                'orden' => $orden = $val,
+                'formato' => $formato = $val,
+                default => null,
+            };
+        }
+    }
+
+    if (empty($nombres) && !empty($args) && !str_starts_with($args[0], '--')) {
+        $nombres = $args[0];
+    }
+
+    if (empty($nombres)) {
+        $nombres = trim(file_get_contents('php://stdin'));
+    }
+
+    if (empty($nombres)) {
+        fwrite(STDERR, "Uso: php correct.php [--nombres=STRING] [--apellidos=STRING] [--orden=nombres_apellidos|apellidos_nombres] [--formato=MAYUSCULAS|minusculas|Capitalizado]\n");
         exit(1);
     }
+
     $c = new Corrector();
-    echo $c->correct($input) . "\n";
+    $result = $c->correctStructured($nombres, $apellidos, $orden, $formato);
+    echo $result['corrected'] . "\n";
     exit(0);
 }
