@@ -24,27 +24,6 @@ class Corrector {
         );
     }
 
-    private static function isAccentOnly(string $orig, string $sug): bool {
-        return self::removeAccents(mb_strtoupper($orig)) === self::removeAccents(mb_strtoupper($sug));
-    }
-
-    private static function hunspellSuggest(string $word): ?string {
-        $clean = preg_replace('/[^A-Za-zÁÉÍÓÚÜÑáéíóúüñ]/u', '', $word);
-        if (strlen($clean) < 2) return null;
-        $output = shell_exec("echo " . escapeshellarg($clean) . " | hunspell -d es_MX -a 2>/dev/null");
-        if (!$output) return null;
-        foreach (explode("\n", $output) as $line) {
-            if (strpos($line, '&') !== 0) continue;
-            $parts = explode(':', $line);
-            if (count($parts) < 2) continue;
-            foreach (explode(',', trim($parts[1])) as $sug) {
-                $sug = trim($sug);
-                if (self::isAccentOnly($clean, $sug)) return $sug;
-            }
-        }
-        return null;
-    }
-
     private static function applyFormat(string $word, string $formato): string {
         return match($formato) {
             'MAYUSCULAS' => mb_strtoupper($word),
@@ -60,12 +39,7 @@ class Corrector {
         foreach ($words as $word) {
             $upper = mb_strtoupper(trim($word));
             $key = self::removeAccents($upper);
-            if (isset($this->dict[$key])) {
-                $result[] = $this->dict[$key];
-            } else {
-                $sug = self::hunspellSuggest($word);
-                $result[] = $sug ? mb_strtoupper($sug) : $word;
-            }
+            $result[] = $this->dict[$key] ?? $word;
         }
         return implode(' ', $result);
     }
@@ -89,7 +63,6 @@ class Corrector {
         $words = preg_split('/\s+/', $combined);
         $correctedWords = [];
         $changes = [];
-        $usedHunspell = false;
 
         foreach ($words as $word) {
             $upper = mb_strtoupper(trim($word));
@@ -100,14 +73,7 @@ class Corrector {
                     $changes[] = ['from' => $upper, 'to' => $this->dict[$key]];
                 }
             } else {
-                $sug = self::hunspellSuggest($word);
-                if ($sug && mb_strtoupper($sug) !== $upper) {
-                    $correctedWords[] = mb_strtoupper($sug);
-                    $changes[] = ['from' => $upper, 'to' => mb_strtoupper($sug)];
-                    $usedHunspell = true;
-                } else {
-                    $correctedWords[] = $word;
-                }
+                $correctedWords[] = $word;
             }
         }
 
@@ -116,7 +82,7 @@ class Corrector {
         $correctedWords = array_map(fn($w) => self::applyFormat($w, $formato), $correctedWords);
         $corrected = implode(' ', $correctedWords);
 
-        $method = !empty($changes) ? ($usedHunspell ? 'hunspell' : 'dictionary') : 'no_changes';
+        $method = !empty($changes) ? 'dictionary' : 'no_changes';
 
         return [
             'original' => $combined,
