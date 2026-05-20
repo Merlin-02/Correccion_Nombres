@@ -6,7 +6,7 @@ body {
 }
 .container { max-width: 640px; width: 100%; }
 .logo {
-  text-align: center; font-size: 2.5rem; color: #6366f1;
+  text-align: center; font-size: 2.5rem; color: #641333;
   margin-bottom: 0.5rem; opacity: 0.7;
 }
 h1 { font-size: 1.65rem; font-weight: 700; text-align: center; color: #f1f5f9; letter-spacing: -0.02em; }
@@ -32,7 +32,7 @@ input[type="text"] {
   outline: none; font-family: 'SF Mono', 'Fira Code', monospace;
   text-transform: uppercase; letter-spacing: 0.08em;
 }
-input[type="text"]:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.15); }
+input[type="text"]:focus { border-color: #641333; box-shadow: 0 0 0 3px rgba(100,19,51,0.15); }
 input[type="text"]::placeholder { color: #334155; letter-spacing: 0.02em; text-transform: none; }
 
 .options-row {
@@ -43,7 +43,7 @@ input[type="text"]::placeholder { color: #334155; letter-spacing: 0.02em; text-t
   border: 1px solid #334155; background: #0b1120; color: #e2e8f0;
   outline: none; cursor: pointer;
 }
-.options-row select:focus { border-color: #6366f1; }
+.options-row select:focus { border-color: #641333; }
 
 button {
   padding: 0.6rem 1.5rem; font-size: 0.9rem; font-weight: 600;
@@ -51,7 +51,7 @@ button {
   white-space: nowrap;
 }
 #correctBtn {
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, #641333, #8a1a47);
   color: white; letter-spacing: 0.02em;
 }
 #correctBtn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(99,102,241,0.4); }
@@ -101,7 +101,7 @@ button {
 }
 .test-btn:hover { background: #263040; color: #e2e8f0; border-color: #475569; }
 
-.subtitle a { color: #818cf8; text-decoration: none; }
+.subtitle a { color: #8a1a47; text-decoration: none; }
 .subtitle a:hover { text-decoration: underline; }
 
 /* ===== Diccionario (estilo profesional/institucional) ===== */
@@ -121,7 +121,7 @@ button {
 .dict-back {
   display: inline-block;
   font-size: 0.85rem;
-  color: #6366f1;
+  color: #641333;
   text-decoration: none;
   margin-bottom: 0.75rem;
   font-weight: 500;
@@ -192,7 +192,7 @@ button {
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 .add-field input:focus {
-  border-color: #6366f1;
+  border-color: #641333;
   box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
 }
 .add-field input::placeholder {
@@ -211,14 +211,14 @@ button {
   padding: 0.55rem 1.25rem;
   font-size: 0.85rem;
   font-weight: 600;
-  background: #6366f1;
+  background: #641333;
   color: #ffffff;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.15s;
 }
-#addBtn:hover { background: #4f46e5; }
+#addBtn:hover { background: #4f0e28; }
 #addBtn:disabled { background: #94a3b8; cursor: not-allowed; }
 
 .add-msg {
@@ -276,7 +276,7 @@ button {
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 .dict-search:focus {
-  border-color: #6366f1 !important;
+  border-color: #641333 !important;
   box-shadow: 0 0 0 3px rgba(99,102,241,0.1) !important;
 }
 .dict-search::placeholder { color: #94a3b8; }
@@ -294,7 +294,7 @@ button {
   width: 18px;
   height: 18px;
   border: 2px solid #e2e8f0;
-  border-top-color: #6366f1;
+  border-top-color: #641333;
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
 }
@@ -364,12 +364,12 @@ button {
   background: #f8fafc;
 }
 .page-active {
-  background: #6366f1 !important;
+  background: #641333 !important;
   color: #ffffff !important;
-  border-color: #6366f1 !important;
+  border-color: #641333 !important;
 }
 .page-active:hover:not(:disabled) {
-  background: #4f46e5 !important;
+  background: #4f0e28 !important;
 }
 .page-dots {
   color: #94a3b8;
