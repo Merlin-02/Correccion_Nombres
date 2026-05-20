@@ -1,12 +1,6 @@
 # Corrector de Acentos para Nombres Hispanos
 
-Corrige acentos ortográficos en nombres propios del español usando un diccionario en MySQL y Hunspell como respaldo.
-
-## Requisitos
-
-- PHP 8.1+
-- MySQL/MariaDB
-- Hunspell con diccionario `es_MX` (opcional, para fallback)
+Corrige acentos ortográficos en nombres propios del español usando un diccionario en MySQL.
 
 ## Setup
 
@@ -128,7 +122,7 @@ echo Corrector::removeAccents('JOSÉ GARCÍA'); // "JOSE GARCIA"
 [
   'original'  => 'JOSE GARCIA',
   'corrected' => 'José García',
-  'method'    => 'dictionary',   // 'dictionary' | 'hunspell' | 'no_changes'
+  'method'    => 'dictionary',   // 'dictionary' | 'no_changes'
   'changes'   => [
     ['from' => 'JOSE',   'to' => 'JOSÉ'],
     ['from' => 'GARCIA', 'to' => 'GARCÍA'],
