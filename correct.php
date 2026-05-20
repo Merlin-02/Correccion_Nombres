@@ -4,7 +4,7 @@ class Corrector {
     private array $dict = [];
 
     public function __construct() {
-        $dbPath = __DIR__ . '/backend/db.php';
+        $dbPath = __DIR__ . '/servicios/db.php';
         if (!file_exists($dbPath)) return;
         require_once $dbPath;
         $conn = getDbConnection();

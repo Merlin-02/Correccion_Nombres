@@ -15,6 +15,7 @@ if ($uri === '/api/dictionary') {
 }
 
 if ($uri === '/diccionario') {
+    header('Content-Type: text/html; charset=utf-8');
     readfile($frontendDir . '/dictionary.html');
     return true;
 }

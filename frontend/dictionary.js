@@ -1,6 +1,6 @@
 const API = '/api/dictionary';
 let currentPage = 1;
-const PER_PAGE = 20;
+const PER_PAGE = 7;
 
 const addInput = document.getElementById('addInput');
 const addAccentedInput = document.getElementById('addAccentedInput');
