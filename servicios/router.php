@@ -8,6 +8,18 @@ if ($uri === '/api/correct') {
     return true;
 }
 
+if ($uri === '/api/dictionary') {
+    header('Access-Control-Allow-Origin: *');
+    require __DIR__ . '/dictionary.php';
+    return true;
+}
+
+if ($uri === '/diccionario') {
+    header('Content-Type: text/html; charset=utf-8');
+    readfile($frontendDir . '/dictionary.html');
+    return true;
+}
+
 $filePath = $frontendDir . ($uri === '/' ? '/index.html' : $uri);
 if (file_exists($filePath) && !is_dir($filePath)) {
     $ext = pathinfo($filePath, PATHINFO_EXTENSION);
