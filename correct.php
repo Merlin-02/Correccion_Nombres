@@ -17,7 +17,7 @@ class Corrector {
         $result->free();
     }
 
-    private static function removeAccents(string $s): string {
+    public static function removeAccents(string $s): string {
         return str_replace(
             ['Á','É','Í','Ó','Ú','Ü','á','é','í','ó','ú','ü','Ñ','ñ'],
             ['A','E','I','O','U','U','a','e','i','o','u','u','N','n'], $s

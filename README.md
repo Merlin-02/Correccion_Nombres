@@ -85,22 +85,35 @@ Respuesta:
 
 ```
 php -S localhost:8000 backend/router.php
-# Abrir http://localhost:8000
+# Abrir http://localhost:8000          (corrector)
+#      http://localhost:8000/diccionario (admin diccionario)
 ```
+
+## Administrar diccionario
+
+Desde `/diccionario` se puede:
+- **Listar** palabras registradas con paginación y búsqueda
+- **Agregar** nuevas palabras al diccionario (sin acento → con acento)
+
+API: `GET /api/dictionary?action=list&page=1&per_page=20&search=...`
+API: `GET /api/dictionary?action=add&word_no_accent=JOSE&word_accented=JOSÉ`
 
 ## Estructura
 
 ```
-├── api/migrate.php       ← Pobla la BD desde arrays o desde tabla personas (legacy)
+├── api/migrate.php          ← Pobla BD desde arrays o tabla legacy
 ├── backend/
-│   ├── correct.php       ← API endpoint
-│   ├── db.php            ← Helper de conexión a BD
-│   └── router.php        ← Router para PHP built-in server
-├── correct.php           ← CLI + clase Corrector
-├── database.sql          ← Esquema de BD
-├── config.ini            ← Credenciales MySQL
+│   ├── correct.php          ← API endpoint /api/correct
+│   ├── dictionary.php       ← API endpoint /api/dictionary
+│   ├── db.php               ← Helper de conexión a BD
+│   └── router.php           ← Router para PHP built-in server
+├── correct.php              ← CLI + clase Corrector
+├── database.sql             ← Esquema de BD
+├── config.ini               ← Credenciales MySQL
 └── frontend/
-    ├── index.html
+    ├── index.html           ← Corrector (dark theme)
+    ├── dictionary.html       ← Admin diccionario (tema claro institucional)
+    ├── dictionary.js
     ├── app.js
     └── style.css
 ```
